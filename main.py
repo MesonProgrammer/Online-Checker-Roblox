@@ -27,7 +27,7 @@ def alarm(username: str, presence: str) -> None:
 
         text = f"**ALARM** **ALARM**\n{username} is {presence.upper()}!!!"
     
-    print(text)
+    print(text+'\n')
     notification.notify(
         title=f"Info about {username}",
         message=text,
