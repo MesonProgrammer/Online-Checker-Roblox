@@ -1,5 +1,6 @@
 import requests
 from typing import Literal
+import utils
 
 class Bot:
     def __init__(self) -> None:
@@ -25,7 +26,7 @@ class Bot:
             else:
                 return "unknown"
         else:
-            raise Exception(f"Error occurred. Status code: {response.status_code}. Text: {response.text}")
+            raise utils.show_error(response)
         
     def get_id_from_username(self, username: str) -> int:
         params = {
@@ -38,5 +39,17 @@ class Bot:
             user_id = json['data'][0]['id']
             return user_id
         else:
-            raise Exception(f"Error occurred. Status code: {response.status_code}. Text: {response.text}")
-        
+            raise utils.show_error(response)
+    
+    def get_username(self, user_id: str) -> str:
+        params = {
+            "userId": user_id
+        }
+
+        response = requests.get("https://users.roblox.com/v1/users", params=params)
+        if response.ok:
+            json = response.json()
+            username = json['name']
+            return username
+        else:
+            raise utils.show_error(response)
