@@ -35,9 +35,9 @@ def alarm(username: str, presence: str) -> None:
     )
 
 def terminal() -> None:
+    global users
     bot = Bot()
 
-    users = {}
     print("Select users ('q' to finish)")
     while True:
         username = input(f"Enter username (Users in list: {len(users)}): ").strip()
@@ -53,7 +53,7 @@ def terminal() -> None:
             print(f"An error occurred when verifying the username. Ensure it exists and that you have a stable WiFi connection.\nMore info about the error:\n{e}")
             continue
 
-        users[user_id] = username
+        users[user_id] = [username, None]
     
     if len(users) == 0:
         print("No users in list. Exiting program.")
@@ -67,9 +67,16 @@ def terminal() -> None:
     
     try:
         while True:
-            for user_id, username in users.items():
+            for user_id, info in users.items():
+                username = info[0]
+                print(f"Checking presence of {username}...")
+
                 presence = bot.check_presence(user_id)
-                alarm(username, presence)
+
+                # Checks if the presence is the same as last time. If it isn't, it will call the alarm function. This is to prevent excessive notifications and it will only notify the user when there is new activity.
+                if presence != users[user_id][1]:
+                    users[user_id] = [username, presence]
+                    alarm(username, presence)
 
                 # Wait 30 seconds to prevent too many requests
                 time.sleep(30)
@@ -77,6 +84,9 @@ def terminal() -> None:
         print("Program terminated via Keyboard Interrupt.")
 
 if __name__ == '__main__':
+    # The structure of this dictionary should be {user_id: [username, presence]}
+    # For example: {1: ["Roblox", "offline"]}
+    users = {}
     print("Welcome to the Online Checker for Roblox!")
     mode = input("Would you like to use the terminal or the GUI?\n1. Terminal\n2. GUI (WORK IN PROGRESS)\n> ").strip()
     if mode == "1":
