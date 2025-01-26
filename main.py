@@ -20,10 +20,11 @@ def alarm(username: str, presence: str) -> None:
     if presence == 'offline':
         text = f"**INFO**\n{username} is offline."
     else:
-        if presence == 'online':
-            online_sound()
-        elif presence == 'gaming':
-            gaming_sound()
+        if sound:
+            if presence == 'online':
+                online_sound()
+            elif presence == 'gaming':
+                gaming_sound()
 
         text = f"**ALARM** **ALARM**\n{username} is {presence.upper()}!!!"
     
@@ -35,7 +36,7 @@ def alarm(username: str, presence: str) -> None:
     )
 
 def terminal() -> None:
-    global users
+    global users, sound
     bot = Bot()
 
     print("Select users ('q' to finish)")
@@ -86,6 +87,7 @@ def terminal() -> None:
 if __name__ == '__main__':
     # The structure of this dictionary should be {user_id: [username, presence]}
     # For example: {1: ["Roblox", "offline"]}
+    sound = False
     users = {}
     print("Welcome to the Online Checker for Roblox!")
     mode = input("Would you like to use the terminal or the GUI?\n1. Terminal\n2. GUI (WORK IN PROGRESS)\n> ").strip()
